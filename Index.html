@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inter - Premium Experience</title>
+    <style>
+        :root { --orange: #FF6600; --gray: #f4f4f4; --text: #333; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: #fff; overflow-x: hidden; color: var(--text); }
+
+        /* Notificação Superior */
+        #push-area { 
+            position: fixed; top: -120px; left: 50%; transform: translateX(-50%); 
+            width: 92%; max-width: 400px; background: white; border-radius: 20px; 
+            padding: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 9999; 
+            display: flex; align-items: center; gap: 12px; 
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        #push-area.show { top: 15px; }
+        .icon-inter { background: var(--orange); color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* Telas */
+        .tela { display: none; width: 100%; min-height: 100vh; animation: fade 0.3s ease; }
+        .tela.ativa { display: block; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Cabeçalho */
+        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: var(--orange); font-size: 30px; font-weight: 900; letter-spacing: -1px; }
+
+        /* Cartão Laranja */
+        .cartao-topo {
+            width: 90%; height: 180px; background: linear-gradient(135deg, #FF6600 0%, #ff8c40 100%);
+            margin: 10px auto 25px; border-radius: 22px; padding: 25px; color: white;
+            box-shadow: 0 12px 25px rgba(255, 102, 0, 0.2); position: relative;
+        }
+        .cartao-nome { position: absolute; bottom: 25px; left: 25px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Seção Saldo */
+        .secao-saldo { padding: 0 25px 20px; cursor: pointer; }
+        .valor-principal { font-size: 32px; font-weight: bold; transition: 0.2s; }
+        .valor-principal.update { transform: scale(1.1); color: var(--orange); }
+
+        /* Grids de Botões */
+        .grid-home { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; }
+        .btn-app { text-align: center; cursor: pointer; border: none; background: none; }
+        .icon-box { background: var(--gray); width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px; }
+        .btn-app span { font-size: 12px; font-weight: 500; color: #555; }
+
+        /* Alerta de Segurança */
+        .alerta-seguranca { margin: 20px; padding: 20px; background: #fff5f0; border-radius: 20px; border: 1px solid #ffccac; }
+
+        /* Estilo Comprovante */
+        .comp-container { padding: 20px; background: #fff; }
+        .comp-header-img { text-align: center; padding: 20px 0; }
+        .comp-header-img .logo { font-size: 28px; }
+        .comp-title { text-align: center; font-size: 24px; font-weight: bold; margin: 5px 0; }
+        .comp-value-main { text-align: center; font-size: 32px; font-weight: bold; margin-bottom: 30px; }
+        .comp-divider { border-top: 1.5px dashed #e0e0e0; margin: 20px 0; }
+        .comp-section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #000; }
+        .comp-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .comp-label { color: #555; width: 40%; }
+        .comp-data { font-weight: bold; text-align: right; width: 60%; color: #000; }
+
+        /* Botões e Inputs */
+        .btn-confirm { width: 100%; background: var(--orange); color: white; border: none; padding: 20px; border-radius: 14px; font-weight: bold; cursor: pointer; }
+        input { width: 100%; padding: 18px; margin-bottom: 15px; border: 1.5px solid #eee; border-radius: 14px; font-size: 16px; outline: none; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid var(--orange); border-radius: 50%; animation: spin 1s linear infinite; margin: 180px auto 20px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="push-area">
+        <div class="icon-inter">i</div>
+        <div><strong id="push-tit">inter</strong><br><span id="push-msg">Pix recebido</span></div>
+    </div>
+
+    <div id="home" class="tela ativa">
+        <header><div class="logo">inter</div><div>🔍 👤</div></header>
+
+        <div class="cartao-topo">
+            <div class="cartao-logo" style="font-size: 22px; font-weight: 900;">inter</div>
+            <div style="width: 45px; height: 35px; background: #eec110; border-radius: 8px; margin-top: 20px;"></div>
+            <div class="cartao-nome">Aguiar7x</div>
+            <div style="position: absolute; bottom: 25px; right: 25px; opacity: 0.7;">Mastercard</div>
+        </div>
+
+        <div class="secao-saldo" onclick="ajustarSaldoManual()">
+            <div style="color:#888; font-size:13px; margin-bottom:5px;">Saldo em conta</div>
+            <div class="valor-principal" id="display-saldo">R$ 50,14</div>
+        </div>
+
+        <div class="grid-home">
+            <div class="btn-app" onclick="nav('t-pix')"><div class="icon-box">💎</div><span>Pix</span></div>
+            <div class="btn-app" onclick="nav('t-card')"><div class="icon-box">💳</div><span>Cartões</span></div>
+            <div class="btn-app"><div class="icon-box">📊</div><span>Extrato</span></div>
+            <div class="btn-app"><div class="icon-box">📈</div><span>Investir</span></div>
+            <div class="btn-app"><div class="icon-box">🧾</div><span>Fatura</span></div>
+            <div class="btn-app"><div class="icon-box">🛡️</div><span>Seguros</span></div>
+            <div class="btn-app"><div class="icon-box">🛍️</div><span>Shopping</span></div>
+            <div class="btn-app"><div class="icon-box">📱</div><span>Recarga</span></div>
+        </div>
+
+        <div class="alerta-seguranca">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <span style="font-size: 24px;">⚠️</span>
+                <strong style="color: #d34000; font-size: 18px;">CUIDADO COM GOLPES!</strong>
+            </div>
+            <p style="margin: 0; font-size: 14px; color: #555; line-height: 1.5;">
+                O <strong>inter</strong> nunca liga pedindo sua senha ou transferências de teste. Proteja seus dados.
+            </p>
+        </div>
+
+        <center><button onclick="nav('t-cfg')" style="background:none; border:none; color:#eee; font-size:10px; margin-top: 20px;">configurações inter</button></center>
+    </div>
+
+    <div id="t-pix" class="tela">
+        <div style="padding:20px; font-weight:bold; color:var(--orange)" onclick="nav('home')">← Voltar</div>
+        <div style="padding:20px">
+            <h2>Enviar Pix</h2>
+            <input type="text" id="pix-nome" placeholder="Nome de quem recebe">
+            <input type="number" id="pix-valor" placeholder="Valor R$">
+            <button class="btn-confirm" onclick="realizarPix()">Confirmar Envio</button>
+        </div>
+    </div>
+
+    <div id="t-load" class="tela">
+        <div class="spinner"></div>
+        <center><h3>Processando transação...</h3></center>
+    </div>
+
+    <div id="t-comp" class="tela">
+        <div class="comp-container">
+            <div class="comp-header-img">
+                <div class="logo">inter</div>
+            </div>
+            <div class="comp-title">Pix enviado</div>
+            <div class="comp-value-main" id="res-val">R$ 0,00</div>
+
+            <div class="comp-divider"></div>
+
+            <div class="comp-section-title">Sobre a transação</div>
+            <div class="comp-row"><span class="comp-label">Data do pagamento</span><span class="comp-data" id="res-data">--</span></div>
+            <div class="comp-row"><span class="comp-label">Horário</span><span class="comp-data" id="res-hora">--</span></div>
+            <div class="comp-row"><span class="comp-label">ID da transação</span><span class="comp-data" style="font-size: 10px;">E00416968202306291424GqFC3KBBdNa</span></div>
+
+            <div class="comp-divider"></div>
+
+            <div class="comp-section-title">Quem recebeu</div>
+            <div class="comp-row"><span class="comp-label">Nome</span><span class="comp-data" id="res-dest">--</span></div>
+            <div class="comp-row"><span class="comp-label">CPF/CNPJ</span><span class="comp-data">***.026.118-**</span></div>
+            <div class="comp-row"><span class="comp-label">Instituição</span><span class="comp-data">Pagseguro Internet Ip S.A.</span></div>
+
+            <div class="comp-divider"></div>
+
+            <div class="comp-section-title">Quem pagou</div>
+            <div class="comp-row"><span class="comp-label">Nome</span><span class="comp-data" id="res-pagador">Aguiar7x</span></div>
+            <div class="comp-row"><span class="comp-label">CPF/CNPJ</span><span class="comp-data">***.543.210-**</span></div>
+            <div class="comp-row"><span class="comp-label">Instituição</span><span class="comp-data">Banco Inter S.A.</span></div>
+
+            <button class="btn-confirm" style="margin-top:40px;" onclick="nav('home')">Concluído</button>
+        </div>
+    </div>
+
+    <div id="t-cfg" class="tela">
+        <div style="padding:20px" onclick="nav('home')">← Voltar</div>
+        <div style="padding:20px">
+            <h3>Configurações do App</h3>
+            <label style="font-size: 12px; color: #666;">Nome de quem envia (Comprovante)</label>
+            <input type="text" id="cfg-pagador" placeholder="Ex: Aguiar7x">
+            
+            <hr style="margin: 20px 0; opacity: 0.2;">
+            
+            <h3>Ciclo de Ganhos</h3>
+            <input type="text" id="not-nome" placeholder="Nome na Notificação">
+            <input type="number" id="not-val" placeholder="Valor por notif.">
+            <input type="number" id="not-qtd" placeholder="Qtd. de notificações">
+            <button class="btn-confirm" onclick="cicloGanhos()">Ativar Ciclo Animado</button>
+        </div>
+    </div>
+
+    <script>
+        let saldoAtual = 50.14;
+        let nomePagador = "Aguiar7x";
+
+        function nav(id) {
+            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+            document.getElementById(id).classList.add('ativa');
+            window.scrollTo(0,0);
+        }
+
+        function atualizarSaldoUI(ganhou = false) {
+            const el = document.getElementById('display-saldo');
+            el.innerText = "R$ " + saldoAtual.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            if(ganhou) {
+                el.classList.add('update');
+                setTimeout(() => el.classList.remove('update'), 400);
+            }
+        }
+
+        function ajustarSaldoManual() {
+            const v = prompt("Ajustar saldo:", saldoAtual);
+            if(v !== null) { saldoAtual = parseFloat(v); atualizarSaldoUI(); }
+        }
+
+        function realizarPix() {
+            const v = parseFloat(document.getElementById('pix-valor').value);
+            const n = document.getElementById('pix-nome').value;
+            const p = document.getElementById('cfg-pagador').value || "Aguiar7x";
+            
+            if(!v || v > saldoAtual) return alert("Verifique o valor ou saldo!");
+
+            nav('t-load');
+            setTimeout(() => {
+                saldoAtual -= v;
+                atualizarSaldoUI();
+                const agora = new Date();
+                const dias = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+                
+                document.getElementById('res-val').innerText = "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                document.getElementById('res-dest').innerText = n;
+                document.getElementById('res-pagador').innerText = p;
+                document.getElementById('res-data').innerText = dias[agora.getDay()] + ", " + agora.toLocaleDateString('pt-BR');
+                document.getElementById('res-hora').innerText = agora.getHours() + "h" + (agora.getMinutes()<10?'0':'') + agora.getMinutes();
+                nav('t-comp');
+            }, 3000);
+        }
+
+        function cicloGanhos() {
+            const nome = document.getElementById('not-nome').value || "inter";
+            const valorGanhado = parseFloat(document.getElementById('not-val').value) || 0;
+            const qtd = parseInt(document.getElementById('not-qtd').value) || 1;
+            nav('home');
+            let i = 0;
+            const loop = setInterval(() => {
+                saldoAtual += valorGanhado;
+                atualizarSaldoUI(true);
+                document.getElementById('push-msg').innerText = nome + " enviou R$ " + valorGanhado.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                const p = document.getElementById('push-area');
+                p.classList.add('show');
+                setTimeout(() => p.classList.remove('show'), 2000);
+                i++;
+                if(i >= qtd) clearInterval(loop);
+            }, 3500);
+        }
+    </script>
+</body>
+                                                                             </html>
+                                                                             
